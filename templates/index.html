@@ -1,66 +1,39 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
     <meta charset="UTF-8">
-    <title>DevFlix</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <script src="{{ url_for('static', filename='js/loading.js') }}"></script>
+    <title>Catálogo</title>
+    <link rel="stylesheet" href="../static/style.css">
 </head>
-
 <body>
+    <div class="container">
 
-    <header class="navbar">
-        <h1 class="logo">Dev<span>FLIX</span></h1>
-    </header>
+<h1>Filmes</h1>
 
-    <section class="container">
-        <div class="header-section">
-            <h2 class="section-title">Catálogo de Filmes</h2>
-            <a href="{{ url_for('add_filme') }}" class="btn-add">
-                + Adicionar Filme
-            </a>
-        </div>
+<a href="{{ url_for('novo_filme') }}">Adicionar Filme</a>
 
-        <div class="grid-filmes">
-            {% for filme in filmes %}
-            <div class="card">
-                <div class="card-content">
-                    <h3>{{ filme.titulo }}</h3>
-                    {% if filme.url_capa %}
-                    <img src="{{ url_for('static', filename=filme.url_capa) }}" alt="{{ filme.titulo }}" class="card-img">
-                    {% else %}
-                    <div class="card-img card-img-placeholder">🎬</div>
-                    {% endif %}
-                    <p><strong>Gênero:</strong> {{filme.genero}}</p>
-                    <p><strong>Lançamento:</strong> {{ filme.ano }}</p>
-                    <div style="margin-top: 15px;">
-                        <a href="{{ url_for('editar_filme', id=filme.id) }}"
-                            style="padding: 5px 10px; background-color: #f39c12; color: white; text-decoration: none; border-radius: 4px; margin-right: 5px;">Editar</a>
-                        <form action="{{ url_for('deletar_filme', id=filme.id) }}" method="POST"
-                            style="display:inline;">
-                            <button type="submit" onclick="return confirm('Tem certeza que deseja excluir?');"
-                                style="padding: 5px 10px; background-color: #e74c3c; color: white; border: none; border-radius: 4px; cursor: pointer;">Excluir</button>
-                        </form>
-                    </div>
+<hr>
 
-                </div>
-            </div>
-            {% else %}
-            <div class="empty-message">
-                <h3>Nenhum filme disponível</h3>
-            </div>
-            {% endfor %}
-        </div>
-    </section>
-    {% include 'components/loading.html' %}
+{% for filme in filmes %}
+    <div>
+        <h2>{{ filme.titulo }}</h2>
+        <p>{{ filme.genero }}</p>
+        <p>{{ filme.ano }}</p>
 
-    <script>
-        window.addEventListener('load', () => {
-            Loading.attachToForms('Excluindo filme...');
-            Loading.attachToLinks('.btn-add, .card-content a', 'Carregando...');
-        });
-    </script>
+        {% if filme.url_capa %}
+            <img src="{{ url_for('static', filename=filme.url_capa) }}" width="200">
+        {% endif %}
+
+        <form action="{{ url_for('deletar_filme', id=filme.id) }}" method="POST">
+            <button type="submit">Excluir</button>
+        </form>
+
+        <hr>
+    </div>
+{% else %}
+    <p>Nenhum filme cadastrado</p>
+{% endfor %}
+
+</div>
 </body>
-
 </html>

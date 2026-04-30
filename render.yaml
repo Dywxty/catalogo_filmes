@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: catalogo-filmes
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+    runtime: python
+    pythonVersion: 3.11

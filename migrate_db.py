@@ -1,17 +1,28 @@
 import psycopg2
 from psycopg2 import extensions
+import os
 
-# Configurações de conexão (baseadas no seu database.py)
+# ================= CONFIG =================
+
+# LOCAL (desenvolvimento)
 DB_CONFIG = {
     "host": "localhost",
     "user": "postgres",
     "password": "1234"
 }
 
+# PRODUÇÃO (Render + Neon)
+DATABASE_URL = os.environ.get("DATABASE_URL")
+
+
+# ================= CRIAR BANCO =================
 def init_db():
-    """Cria o banco de dados caso não exista."""
+    """Cria o banco de dados caso não exista (APENAS LOCAL)."""
+    if DATABASE_URL:
+        print("Ambiente de produção detectado. Pulando criação de banco.")
+        return
+
     try:
-        # Conecta no banco padrão 'postgres' para criar o novo banco
         conn = psycopg2.connect(
             host=DB_CONFIG["host"],
             user=DB_CONFIG["user"],
@@ -20,55 +31,73 @@ def init_db():
         )
         conn.set_isolation_level(extensions.ISOLATION_LEVEL_AUTOCOMMIT)
         cursor = conn.cursor()
-        
-        # Verifica se o banco existe
-        cursor.execute("SELECT 1 FROM pg_catalog.pg_database WHERE datname = 'catalogo_filmes'")
+
+        cursor.execute(
+            "SELECT 1 FROM pg_catalog.pg_database WHERE datname = 'catalogo_filmes'"
+        )
         exists = cursor.fetchone()
-        
+
         if not exists:
             cursor.execute("CREATE DATABASE catalogo_filmes")
-            print("Banco de dados 'catalogo_filmes' criado com sucesso!")
+            print("Banco 'catalogo_filmes' criado!")
         else:
-            print("Banco de dados 'catalogo_filmes' já existe.")
-            
+            print("Banco já existe.")
+
         cursor.close()
         conn.close()
-    except Exception as e:
-        print(f"Erro ao inicializar banco de dados: {e}")
 
+    except Exception as e:
+        print(f"Erro ao criar banco: {e}")
+
+
+# ================= CONEXÃO =================
+def get_conn():
+    """Retorna conexão (local ou produção)."""
+    if DATABASE_URL:
+        return psycopg2.connect(DATABASE_URL)
+
+    return psycopg2.connect(
+        host=DB_CONFIG["host"],
+        user=DB_CONFIG["user"],
+        password=DB_CONFIG["password"],
+        database="catalogo_filmes"
+    )
+
+
+# ================= CRIAR TABELA =================
 def init_table():
-    """Cria a tabela 'filmes' caso não exista."""
+    """Cria a tabela filmes."""
     try:
-        # Conecta no banco 'catalogo_filmes' agora
-        conn = psycopg2.connect(
-            host=DB_CONFIG["host"],
-            user=DB_CONFIG["user"],
-            password=DB_CONFIG["password"],
-            database="catalogo_filmes"
-        )
+        conn = get_conn()
         cursor = conn.cursor()
-        
-        # Criação da tabela
+
         sql = """
         CREATE TABLE IF NOT EXISTS filmes (
             id SERIAL PRIMARY KEY,
             titulo VARCHAR(255) NOT NULL,
             genero VARCHAR(100),
-            ano DATE,
+            ano VARCHAR(10),
             url_capa TEXT
         );
         """
+
         cursor.execute(sql)
         conn.commit()
-        print("Tabela 'filmes' verificada/criada com sucesso!")
-        
+
+        print("Tabela 'filmes' pronta!")
+
         cursor.close()
         conn.close()
-    except Exception as e:
-        print(f"Erro ao inicializar tabela: {e}")
 
+    except Exception as e:
+        print(f"Erro ao criar tabela: {e}")
+
+
+# ================= RUN =================
 if __name__ == "__main__":
     print("Iniciando migração...")
-    init_db()
-    init_table()
-    print("Migração finalizada.")
+
+    init_db()      # só local
+    init_table()   # local e produção
+
+    print("Migração finalizada!")
