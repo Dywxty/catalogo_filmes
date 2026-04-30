@@ -1,12 +1,14 @@
-/* Definição de Variáveis para facilitar mudanças de cor */
+/* Importando a fonte que lembra o estilo da Netflix */
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;700&display=swap');
+
 :root {
     --primary-color: #e50914;
     --primary-hover: #f40612;
-    --bg-body: #0f0f0f;
-    --bg-card: #1f1f1f;
+    --bg-body: #000000; /* Preto absoluto como a Netflix */
+    --bg-card: #141414; /* Cinza bem escuro para os cards */
     --text-main: #ffffff;
-    --text-muted: #a3a3a3;
-    --transition: all 0.3s ease;
+    --text-muted: #808080;
+    --transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 /* RESET & BASE */
@@ -14,76 +16,87 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    font-family: 'Roboto', sans-serif;
 }
 
 body {
     background-color: var(--bg-body);
     color: var(--text-main);
-    line-height: 1.6;
-    padding: 40px 20px;
+    line-height: 1.4;
+    padding: 40px 4%;
 }
 
-/* TÍTULO PRINCIPAL */
+/* TÍTULO PRINCIPAL (Estilo Logo) */
 h1 {
     text-align: center;
-    font-size: 2.5rem;
-    margin-bottom: 40px;
-    font-weight: 800;
-    letter-spacing: -1px;
+    font-family: 'Bebas Neue', sans-serif; /* Fonte estilo Netflix */
+    letter-spacing: 1px;
+    margin-bottom: 50px;
+}
+
+/* Se você usar <span> dentro do h1 para separar DEV de FLIX */
+h1 .logo-dev {
+    font-size: 4.5rem;
+    color: #ffffff;
+    vertical-align: middle;
+}
+
+h1 .logo-flix {
+    font-size: 3rem;
+    color: var(--primary-color);
+    vertical-align: middle;
 }
 
 /* BOTÃO DE AÇÃO PRINCIPAL */
 .btn-add {
     display: block;
     width: fit-content;
-    margin: 0 auto 40px;
-    padding: 12px 24px;
+    margin: 0 auto 50px;
+    padding: 12px 30px;
     background-color: var(--primary-color);
     color: white;
     text-decoration: none;
     border-radius: 4px;
     font-weight: bold;
     text-transform: uppercase;
-    font-size: 0.9rem;
+    font-size: 1rem;
     transition: var(--transition);
 }
 
 .btn-add:hover {
     background-color: var(--primary-hover);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(229, 9, 20, 0.4);
+    transform: scale(1.05);
 }
 
-/* GRID CONTAINER - Mais robusto que Flex */
+/* GRID CONTAINER */
 .container {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 30px;
-    max-width: 1200px;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 10px; /* Netflix usa pouco espaço entre itens */
+    max-width: 1400px;
     margin: 0 auto;
 }
 
-/* CARD COM EFEITO DE ELEVAÇÃO */
+/* CARD COM EFEITO DE ZOOM CINEMATOGRÁFICO */
 .card {
     background-color: var(--bg-card);
-    border-radius: 12px;
-    overflow: hidden; /* Garante que a imagem não saia do card */
+    border-radius: 4px;
+    overflow: hidden;
     transition: var(--transition);
     position: relative;
-    border: 1px solid #333;
+    border: none;
 }
 
 .card:hover {
-    transform: translateY(-10px);
-    border-color: #555;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    transform: scale(1.1); /* Efeito clássico de expansão */
+    z-index: 10;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.6);
 }
 
-/* IMAGEM COM PROPORÇÃO CINEMATOGRÁFICA */
+/* IMAGEM */
 .card img {
     width: 100%;
-    aspect-ratio: 2 / 3; /* Mantém proporção de poster de filme */
+    aspect-ratio: 16 / 9; /* Formato de miniatura de filme */
     object-fit: cover;
     display: block;
 }
@@ -94,59 +107,63 @@ h1 {
 }
 
 .card h2 {
-    font-size: 1.1rem;
-    margin-bottom: 8px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    margin-bottom: 5px;
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis; /* Corta o texto se for muito longo */
+    text-overflow: ellipsis;
 }
 
 .card p {
     color: var(--text-muted);
-    font-size: 0.9rem;
-    margin-bottom: 15px;
+    font-size: 0.8rem;
+    margin-bottom: 12px;
 }
 
-/* BOTÃO EXCLUIR MAIS DISCRETO */
+/* BOTÃO EXCLUIR */
 .btn-delete {
     width: 100%;
-    padding: 10px;
-    background-color: transparent;
-    color: var(--text-muted);
+    padding: 8px;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
     border: 1px solid #444;
-    border-radius: 6px;
+    border-radius: 4px;
     cursor: pointer;
     transition: var(--transition);
-    font-weight: 500;
+    font-size: 0.75rem;
+    text-transform: uppercase;
 }
 
 .btn-delete:hover {
-    background-color: rgba(229, 9, 20, 0.1);
-    color: var(--primary-color);
-    border-color: var(--primary-color);
+    background-color: white;
+    color: black;
+    border-color: white;
 }
 
-/* FORMULÁRIO ESTILIZADO */
+/* FORMULÁRIO ESTILIZADO (Estilo Login Netflix) */
 .form-container {
     max-width: 450px;
     margin: 40px auto;
-    background: #1a1a1a;
-    padding: 30px;
-    border-radius: 15px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    background: rgba(0, 0, 0, 0.75); /* Semi-transparente */
+    padding: 50px;
+    border-radius: 4px;
+    border: 1px solid #333;
 }
 
 input {
     width: 100%;
-    padding: 12px 15px;
+    padding: 14px 20px;
     margin: 10px 0;
-    border-radius: 6px;
-    border: 1px solid #333;
-    background-color: #2b2b2b;
+    border-radius: 4px;
+    border: none;
+    background-color: #333;
     color: white;
-    outline: none;
+    font-size: 1rem;
 }
 
 input:focus {
-    border-color: var(--primary-color);
+    background-color: #454545;
+    outline: none;
+    border-bottom: 2px solid var(--primary-color);
 }
